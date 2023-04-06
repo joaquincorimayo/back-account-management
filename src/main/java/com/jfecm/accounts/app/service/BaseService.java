@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public abstract class BaseService<T, I extends Number, D> implements IBaseService<T, I, D> {
     protected BaseRepository<T, I> repository;
 
-    public BaseService(BaseRepository<T, I> repository) {
+    protected BaseService(BaseRepository<T, I> repository) {
         this.repository = repository;
     }
 
@@ -31,7 +31,12 @@ public abstract class BaseService<T, I extends Number, D> implements IBaseServic
 
     @Override
     public D findById(I id) {
-        return entityToDTO(repository.findById(id).get());
+        Optional<T> t = repository.findById(id);
+        if (t.isPresent()) {
+            return entityToDTO(t.get());
+        }else{
+            throw new RuntimeException("");
+        }
     }
 
     @Override
@@ -42,8 +47,12 @@ public abstract class BaseService<T, I extends Number, D> implements IBaseServic
     @Override
     public D update(I id, D entity) {
         Optional<T> byId = repository.findById(id);
-        T t = dtoToEntityUpdate(byId.get(), entity);
-        return entityToDTO(repository.save(t));
+        if (byId.isPresent()) {
+            T t = dtoToEntityUpdate(byId.get(), entity);
+            return entityToDTO(repository.save(t));
+        }else{
+            throw new RuntimeException("");
+        }
     }
 
     @Override

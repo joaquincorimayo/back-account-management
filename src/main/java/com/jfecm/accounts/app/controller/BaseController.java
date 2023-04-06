@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class BaseController<T, I extends Number, D> implements IBaseController<I, D> {
     protected BaseService<T, I, D> service;
 
-    public BaseController(BaseService<T, I, D> service) {
+    protected BaseController(BaseService<T, I, D> service) {
         this.service = service;
     }
 
@@ -74,7 +74,7 @@ public abstract class BaseController<T, I extends Number, D> implements IBaseCon
 
     @DeleteMapping("/{id}")
     @Override
-    public ResponseEntity<?> delete(@PathVariable I id) {
+    public ResponseEntity<String> delete(@PathVariable I id) {
         try {
             service.delete(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
