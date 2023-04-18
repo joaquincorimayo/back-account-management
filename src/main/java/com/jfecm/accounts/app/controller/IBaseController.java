@@ -19,5 +19,5 @@ public interface IBaseController<I extends Number, D> {
 
     ResponseEntity<D> update(@PathVariable I id, @RequestBody D entity);
 
-    ResponseEntity<String> delete(@PathVariable I id);
+    ResponseEntity<Object> delete(@PathVariable I id);
 }

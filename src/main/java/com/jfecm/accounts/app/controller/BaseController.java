@@ -74,7 +74,7 @@ public abstract class BaseController<T, I extends Number, D> implements IBaseCon
 
     @DeleteMapping("/{id}")
     @Override
-    public ResponseEntity<String> delete(@PathVariable I id) {
+    public ResponseEntity<Object> delete(@PathVariable I id) {
         try {
             service.delete(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
