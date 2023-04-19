@@ -1,5 +1,6 @@
 package com.jfecm.accounts.app.controller;
 
+import com.jfecm.accounts.app.exception.ListIsEmptyException;
 import com.jfecm.accounts.app.service.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public abstract class BaseController<T, I extends Number, D> implements IBaseCon
     public ResponseEntity<List<D>> getAll() {
         List<D> all = service.findAll();
         if (all.isEmpty()) {
-            throw new RuntimeException("No element found while hitting getAll");
+            throw new ListIsEmptyException("Currently this resource is empty.");
         }
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
@@ -35,51 +36,38 @@ public abstract class BaseController<T, I extends Number, D> implements IBaseCon
     @GetMapping("/paged")
     @Override
     public ResponseEntity<Page<D>> getAll(Pageable pageable) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.findAll(pageable));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Page<D> all = service.findAll(pageable);
+        if (all.isEmpty()) {
+            throw new ListIsEmptyException("Currently this resource is empty.");
         }
+        return ResponseEntity.status(HttpStatus.OK).body(all);
     }
 
     @GetMapping("/{id}")
     @Override
     public ResponseEntity<D> getOne(@PathVariable I id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        D byId = service.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(byId);
     }
 
     @PostMapping("")
     @Override
     public ResponseEntity<D> save(@RequestBody D entity) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.save(entity));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        D save = service.save(entity);
+        return ResponseEntity.status(HttpStatus.OK).body(save);
     }
 
     @PutMapping("/{id}")
     @Override
     public ResponseEntity<D> update(@PathVariable I id, @RequestBody D entity) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.update(id, entity));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        D update = service.update(id, entity);
+        return ResponseEntity.status(HttpStatus.OK).body(update);
     }
 
     @DeleteMapping("/{id}")
     @Override
     public ResponseEntity<Object> delete(@PathVariable I id) {
-        try {
-            service.delete(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        service.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }
 }

@@ -1,5 +1,7 @@
 package com.jfecm.accounts.app.service;
 
+import com.jfecm.accounts.app.exception.InternalServerErrorException;
+import com.jfecm.accounts.app.exception.ResourceNotFoundException;
 import com.jfecm.accounts.app.repository.BaseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 @MappedSuperclass
 @Slf4j
 public abstract class BaseService<T, I extends Number, D> implements IBaseService<T, I, D> {
+    private static final String MSG_ERROR_ID = "Not found resource with id = ";
     protected BaseRepository<T, I> repository;
 
     protected BaseService(BaseRepository<T, I> repository) {
@@ -35,13 +38,18 @@ public abstract class BaseService<T, I extends Number, D> implements IBaseServic
         if (t.isPresent()) {
             return entityToDTO(t.get());
         }else{
-            throw new RuntimeException("");
+            throw new ResourceNotFoundException(MSG_ERROR_ID + id);
         }
     }
 
     @Override
     public D save(D entity) {
-        return entityToDTO(repository.save(dtoToEntity(entity)));
+        try {
+            T save = repository.save(dtoToEntity(entity));
+            return entityToDTO(save);
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Error while saving this resource.");
+        }
     }
 
     @Override
@@ -51,12 +59,16 @@ public abstract class BaseService<T, I extends Number, D> implements IBaseServic
             T t = dtoToEntityUpdate(byId.get(), entity);
             return entityToDTO(repository.save(t));
         }else{
-            throw new RuntimeException("");
+            throw new ResourceNotFoundException(MSG_ERROR_ID + id);
         }
     }
 
     @Override
     public void delete(I id) {
+        D byId = findById(id);
+        if (byId == null) {
+            throw new ResourceNotFoundException(MSG_ERROR_ID + id);
+        }
         repository.deleteById(id);
     }
 }
