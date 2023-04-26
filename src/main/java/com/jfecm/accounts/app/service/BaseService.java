@@ -48,7 +48,7 @@ public abstract class BaseService<T, I extends Number, D> implements IBaseServic
             T save = repository.save(dtoToEntity(entity));
             return entityToDTO(save);
         } catch (Exception e) {
-            throw new InternalServerErrorException("Error while saving this resource.");
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 

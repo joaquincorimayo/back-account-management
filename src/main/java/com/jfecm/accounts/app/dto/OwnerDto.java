@@ -1,5 +1,6 @@
 package com.jfecm.accounts.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,4 +12,6 @@ public class OwnerDto extends BaseDto<Long> {
     private String dni;
     private String email;
     private String address;
+    @JsonIgnore
+    private AccountDto account = new AccountDto();
 }

@@ -15,5 +15,5 @@ public class BaseModel<I extends Number> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private I id;
-    private Boolean isEnabled;
+    private Boolean isEnabled = Boolean.TRUE;
 }
