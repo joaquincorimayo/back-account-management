@@ -43,6 +43,16 @@ public abstract class BaseService<T, I extends Number, D> implements IBaseServic
     }
 
     @Override
+    public T findByIdEntity(I id) {
+        Optional<T> t = repository.findById(id);
+        if (t.isPresent()) {
+            return t.get();
+        }else{
+            throw new ResourceNotFoundException(MSG_ERROR_ID + id);
+        }
+    }
+
+    @Override
     public D save(D entity) {
         try {
             T save = repository.save(dtoToEntity(entity));
