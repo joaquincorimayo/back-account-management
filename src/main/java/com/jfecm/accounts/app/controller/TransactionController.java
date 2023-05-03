@@ -31,5 +31,11 @@ public class TransactionController {
         return new ResponseEntity<>(operation, HttpStatus.OK);
     }
 
+    @PostMapping("/account/{id}/extraction")
+    public ResponseEntity<AccountDto> extraction(@PathVariable Long id, @RequestParam(value = "amount") float amount) {
+        AccountDto response = accountService.extraction(id, amount);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

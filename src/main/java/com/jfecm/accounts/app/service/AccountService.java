@@ -70,6 +70,18 @@ public class AccountService extends BaseService<Account, Long, AccountDto> imple
         return save(entityToDTO(accountOrigin));
     }
 
+    @Override
+    public AccountDto extraction(Long id, float amount) {
+        Account account = findByIdEntity(id);
+        if (amount > account.getCurrentBalance()) {
+            throw new AccountAvailableBalanceException("The account does not have the balance available for the operation. Actual Balance: " + account.getCurrentBalance());
+        }
+        addTransaction(account, amount, account.getAccountNumber(), TypeTransaction.EXTRACTION);
+        Float actualBalance = account.getCurrentBalance() - amount;
+        account.setCurrentBalance(actualBalance);
+        return save(entityToDTO(account));
+    }
+
     private void addTransaction(Account account, Float amount, String madeBy, TypeTransaction typeTransaction) {
         Transaction transactionTarget = new Transaction();
         transactionTarget.setType(typeTransaction);

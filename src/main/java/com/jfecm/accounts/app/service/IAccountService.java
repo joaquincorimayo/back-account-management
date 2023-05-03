@@ -6,4 +6,5 @@ import com.jfecm.accounts.app.entity.Account;
 public interface IAccountService extends IBaseService<Account, Long, AccountDto> {
     AccountDto deposit(Long id, float amount);
     AccountDto transfer(Long origin, Long target, float amount);
+    AccountDto extraction(Long id, float amount);
 }
