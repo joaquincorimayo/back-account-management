@@ -12,6 +12,8 @@ public interface IBaseService<T, I extends Number, D> {
 
     D findById(I id);
 
+    T findByIdEntity(I id);
+
     D save(D entity);
 
     D update(I id, D entity);

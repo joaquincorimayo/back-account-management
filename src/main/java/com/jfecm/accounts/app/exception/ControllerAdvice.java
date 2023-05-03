@@ -32,4 +32,10 @@ public class ControllerAdvice {
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(value = AccountAvailableBalanceException.class)
+    public ResponseEntity<ErrorMessage> accountAvailableBalanceExceptionHandler(AccountAvailableBalanceException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(HttpStatus.METHOD_NOT_ALLOWED.value(), date, ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(message, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
 }
